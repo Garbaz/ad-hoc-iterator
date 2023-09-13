@@ -1,24 +1,20 @@
 #![no_std]
 
-/// # Ad-hoc Iterator
-///
-/// This is a very small crate providing a macro and a function that allow for
-/// conveniently creating iterators on the fly.
-///
-/// The `Iterator` Trait is very useful. The problem ist just that we can't
-/// simply construct an iterator in-place, but rather have to define a struct,
-/// `impl` the `Iterator` trait for it, and then return a value of that struct.
-///
-/// With the [`iterate`](iterate) macro of this crate, you can however do
-/// exactly that. See it's documentation for more information.
-///
-/// With the [`iterator_from`](iterator_from) function, you can directly create
-/// an iterator from an `FnMut` closure (which is exactly the same as what the
-/// `iterate` macro is doing).
+//! # Ad hoc Iterator
+//!
+//! This is a very small crate providing a macro and a function that allow for
+//! conveniently creating iterators on the fly.
+//! 
+//! With the [`iterate`](iterate) macro of this crate, you can however do
+//! exactly that. See it's documentation for more information.
+//!
+//! With the [`iterator_from`](iterator_from) function, you can directly create
+//! an iterator from an `FnMut` closure (which is exactly the same as what the
+//! `iterate` macro is doing behind the scenes).
 
 /// Internal, not intended for direct use.
 ///
-/// See [`iterate`](iterate).
+/// See [`iterate`](iterate) & [`iterator_from`](iterator_from).
 #[doc(hidden)]
 pub struct __ClosureIterator<F>(pub Option<F>);
 
@@ -38,7 +34,7 @@ impl<T, F: FnMut() -> Option<T>> Iterator for __ClosureIterator<F> {
 
 /// Internal, not intended for direct use.
 ///
-/// See [`iterate`](iterate).
+/// See [`iterate`](iterate) & [`iterator_from`](iterator_from).
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __iterate {
@@ -47,7 +43,7 @@ macro_rules! __iterate {
     };
 }
 
-/// Create an ad-hoc iterator.
+/// Create an ad hoc iterator.
 ///
 /// # Usage
 ///
@@ -86,8 +82,9 @@ macro_rules! iterate {
 
 /// Turn a closure into an iterator.
 ///
-/// Each `next()` on the iterator will simply
-/// call the closure once. The iterator ends when the closure returns `None`.
+/// Each `next()` on the iterator will simply call the closure once. The
+/// iterator ends when the closure returns `None`. The closure will not be
+/// called again after that point, even if `next()` is called again.
 ///
 /// # Example
 ///
